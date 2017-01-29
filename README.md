@@ -1,6 +1,6 @@
 # README.md
 
-This repo is a mix of technology to help end-users forecast the stock market close tomorrow:
+This repo is a mix of technology to help end-users forecast the stock market closing price tomorrow:
 
   * Anaconda Python 4.2.0
   * Keras
