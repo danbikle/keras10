@@ -7,6 +7,7 @@
 # ~/anaconda3/bin/python keras10.py
 # curl localhost:5000/keras10/IBM/2016/9
 
+import keras
 import pdb
 import os
 import flask         as fl
@@ -109,8 +110,6 @@ def genf(tkr):
   pctlead_sr         = (100.0*(feat_df.closep.shift(-1) - feat_df.closep) / feat_df.closep).fillna(0)
   feat_df['pctlead'] = np.round(pctlead_sr,3)
   feat_df['updown']  = [int(pctlead > 0.0) for pctlead in feat_df.pctlead]
-  # I should 1-hot-encode feat_df.updown
-  feat_df['y1h'] = [[0,1] if updown else [1,0] for updown in feat_df.updown]
   
   # I should calculate pctlags:
   lags_l = [1,2,3,4,5,6,7,8,12,16]
@@ -171,6 +170,19 @@ class Keras11(fr.Resource):
     x_train_a = np.array(x_train)
     y_train_a = np.array(y_train)
 
+    # I should use Keras to fit a model here.
+    # Keras kmodel wants a 1-hot encoded class.
+    ytrain1h_l = [[0,1] if updown else [1,0] for updown in train_df.updown]
+    ytrain1h_a = np.array(ytrain1h_l).reshape(-1,2)
+    kmodel = keras.models.Sequential()
+    features_i = len(features_l)
+    kmodel.add(keras.layers.core.Dense(features_i, input_shape=(features_i,)))
+    kmodel.add(keras.layers.core.Activation('relu'))
+    kmodel.add(keras.layers.core.Dense(2)) # because I have 2 classes: up and down
+    kmodel.add(keras.layers.core.Activation('softmax'))
+    kmodel.compile(loss='categorical_crossentropy', optimizer='adam')
+    kmodel.fit(x_train_a, ytrain1h_a, batch_size=1, nb_epoch=4)
+    
     linr_model.fit(x_train_a,y_train_a)
 
     # I should collect predictions for yr2predict
@@ -198,11 +210,12 @@ class Keras11(fr.Resource):
     conn = create_engine(db_s).connect()
 
     # I should save predictions to DB:
-    # insert into predictions (tkr,yr2predict,yrs2train,features,csv) values (tkr,int(yr2predict),yrs2train,features,csv_s);
-
     sql_s = 'create table if not exists predictions (tkr varchar, yr2predict int, yrs2train int, features varchar, csv text)'
-    pdb.set_trace()
     conn.execute(sql_s)
+
+    sql_s = 'insert into predictions (tkr,yr2predict,yrs2train,features,csv) values (%s,%s, %s, %s,%s)'
+    conn.execute(sql_s,[tkr,int(yr2predict),yrs2train,features,csv_s])
+
     # I should talk to the End-User:
     return {k1_s:tkr
             ,k2_s:yr2predict
