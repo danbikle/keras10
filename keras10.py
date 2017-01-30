@@ -140,7 +140,7 @@ class Keras11(fr.Resource):
     algo_s = 'Keras Logistic Regression'
 
     # I should get prices and features for tkr:
-    feat_df = genf(prices1_df)
+    feat_df = genf(tkr)
 
     # I should copy test_yr-observations (about 252) from feat_df into test_yr_df.
     test_start_sr = (feat_df.cdate > yr2predict)
