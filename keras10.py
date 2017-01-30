@@ -182,17 +182,15 @@ class Keras11(fr.Resource):
     kmodel.add(keras.layers.core.Activation('softmax'))
     kmodel.compile(loss='categorical_crossentropy', optimizer='adam')
     kmodel.fit(x_train_a, ytrain1h_a, batch_size=1, nb_epoch=4)
-    
-    linr_model.fit(x_train_a,y_train_a)
 
     # I should collect predictions for yr2predict
-    xtest_a = np.array(test_yr_df[features_l].fillna(0.0))
-    predictions_a = linr_model.predict(xtest_a)
+    xtest_a       = np.array(test_yr_df[features_l].fillna(0.0))
+    predictions_a = kmodel.predict(xtest_a)[:,1]
     predictions_l = predictions_a.tolist()
     # I should copy test_yr_df to predictions_df
     predictions_df = test_yr_df.copy()
     predictions_df['prediction'] = predictions_l
-    predictions_df['eff'] = np.sign(predictions_df.prediction) * predictions_df.pctlead
+    predictions_df['eff'] = np.sign(predictions_df.prediction-0.5) * predictions_df.pctlead
     predictions_df['acc'] = (predictions_df.eff > 0).astype(int)
 
     # I should report Accuracy:
