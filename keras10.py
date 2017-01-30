@@ -127,6 +127,9 @@ def genf(tkr):
   moy_l = [float(dt.strftime('%-m'))/100.0 for dt in dt_sr]
   feat_df['dow'] = dow_l
   feat_df['moy'] = moy_l
+  # I should 1-hot-encode feat_df.updown
+  pdb.set_trace()
+  feat_df['y1h'] = [[0,1] if cclass else [1,0] for cclass in feat_df.updown]
   return feat_df
 
 
@@ -140,7 +143,9 @@ class Keras11(fr.Resource):
     algo_s = 'Keras Logistic Regression'
 
     # I should get prices and features for tkr:
-    feat_df = genf(tkr)
+    features_l = features.split(',')
+    col_l      = ['cdate','closep','pctlead','updown']+features_l
+    feat_df    = genf(tkr)[col_l]
 
     # I should copy test_yr-observations (about 252) from feat_df into test_yr_df.
     test_start_sr = (feat_df.cdate > yr2predict)
@@ -156,18 +161,19 @@ class Keras11(fr.Resource):
     train_df       = feat_df.copy()[ train_start_sr & train_end_sr ]
     
     # I should declare x_train to be train_df.pctlag1
-    x_train = train_df.pctlag1
+    x_train = train_df[features_l].fillna(0.0)
     # I should declare y_train to be train_df.pctlead
     y_train = train_df.pctlead
     # I should create a Linear Regression model
     linr_model = skl.LinearRegression()
     # I should use model to "fit" straight line to x_train and y_train
-    x_train_a = np.array(x_train).reshape(-1, 1)
+    x_train_a = np.array(x_train)
     y_train_a = np.array(y_train)
+
     linr_model.fit(x_train_a,y_train_a)
 
     # I should collect predictions for yr2predict
-    xtest_a = np.array(test_yr_df.pctlag1).reshape(-1, 1)
+    xtest_a = np.array(test_yr_df[features_l].fillna(0.0))
     predictions_a = linr_model.predict(xtest_a)
     predictions_l = predictions_a.tolist()
     # I should copy test_yr_df to predictions_df
