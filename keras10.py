@@ -206,21 +206,21 @@ class Keras11(fr.Resource):
     conn = create_engine(db_s).connect()
 
     # I should save predictions to DB:
-    sql_s = 'create table if not exists predictions (tkr varchar, yr2predict int, yrs2train int, features varchar, accuracy float, effectiveness float, csv text)'
+    sql_s = 'create table if not exists predictions (tkr varchar, yr2predict int, yrs2train int, features varchar,effectiveness float,lo_effectiveness float,accuracy float,lo_accuracy float, csv text)'
     conn.execute(sql_s)
 
-    sql_s = 'insert into predictions (tkr,yr2predict,yrs2train,features,accuracy,effectiveness,csv) values (%s,%s,%s, %s, %s,%s,%s)'
-    conn.execute(sql_s,[tkr,int(yr2predict),yrs2train,features,accuracy,effectiveness,csv_s])
+    sql_s = 'insert into predictions (tkr,yr2predict,yrs2train,features,effectiveness,lo_effectiveness,accuracy,lo_accuracy,csv) values (%s,%s,%s, %s,%s,%s, %s,%s,%s)'
+    conn.execute(sql_s,[tkr,int(yr2predict),yrs2train,features,effectiveness_f,lo_effectiveness_f,accuracy_f,lo_accuracy_f,csv_s])
 
     # I should talk to the End-User:
     return {k1_s:tkr
             ,k2_s:yr2predict
             ,k3_s:yrs2train
             ,k4_s:algo_s
-            ,'5. Accuracy':                accuracy_f
-            ,'6. Long Only Accuracy':      lo_accuracy_f
-            ,'7. Effectiveness':           effectiveness_f
-            ,'8. Long Only Effectiveness': lo_effectiveness_f
+            ,'5. Effectiveness':           effectiveness_f
+            ,'6. Long Only Effectiveness': lo_effectiveness_f
+            ,'7. Accuracy':                accuracy_f
+            ,'8. Long Only Accuracy':      lo_accuracy_f
     }
 # I should declare URL-path-tokens, and I should constrain them:
 api.add_resource(Keras11, '/keras11/<tkr>/<yr2predict>/<int:yrs2train>')
