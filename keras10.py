@@ -15,6 +15,7 @@ import pandas        as pd
 import numpy         as np
 import datetime      as dt
 import sklearn.linear_model as skl
+from sqlalchemy import create_engine
 
 application = fl.Flask(__name__)
 api         = fr.Api(application)
@@ -190,9 +191,18 @@ class Keras11(fr.Resource):
     effectiveness_f    = predictions_df.eff.sum()
     lo_effectiveness_f = predictions_df.pctlead.sum()
     csv_s              = predictions_df.to_csv(index=False)
+
+    # I should connect to the DB
+
+    db_s = 'postgres://ann:ann@127.0.0.1/ann'
+    conn = create_engine(db_s).connect()
+
     # I should save predictions to DB:
     # insert into predictions (tkr,yr2predict,yrs2train,features,csv) values (tkr,int(yr2predict),yrs2train,features,csv_s);
-    
+
+    sql_s = 'create table if not exists predictions (tkr varchar, yr2predict int, yrs2train int, features varchar, csv text)'
+    pdb.set_trace()
+    conn.execute(sql_s)
     # I should talk to the End-User:
     return {k1_s:tkr
             ,k2_s:yr2predict
