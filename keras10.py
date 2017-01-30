@@ -114,12 +114,9 @@ class Keras11(fr.Resource):
 
     prices1_df = prices0_df[['Date','Close']].sort_values(['Date'])
     prices1_df.columns = ['Date','Price']
+    # I should write genf() next:
+    feat_df = genf(prices1_df)
     
-    # Create feat_df from prices1_df, pctlead, pctlag1    
-    # See diagram: py4.us/cclasses/class04#r2
-    feat_df = prices1_df.copy()
-    feat_df['pctlead'] = (100.0 * (feat_df.Price.shift(-1) - feat_df.Price) / feat_df.Price).fillna(0)
-    feat_df['pctlag1'] = feat_df.pctlead.shift(1).fillna(0)
 
     # I should copy test_yr-observations (about 252) from feat_df into test_yr_df.
     # See diagram: py4.us/cclasses/class04#r2
