@@ -108,6 +108,9 @@ def genf(tkr):
   pctlead_sr         = (100.0*(feat_df.closep.shift(-1) - feat_df.closep) / feat_df.closep).fillna(0)
   feat_df['pctlead'] = np.round(pctlead_sr,3)
   feat_df['updown']  = [int(pctlead > 0.0) for pctlead in feat_df.pctlead]
+  # I should 1-hot-encode feat_df.updown
+  feat_df['y1h'] = [[0,1] if updown else [1,0] for updown in feat_df.updown]
+  
   # I should calculate pctlags:
   lags_l = [1,2,3,4,5,6,7,8,12,16]
   for lag_i in lags_l:
@@ -127,9 +130,6 @@ def genf(tkr):
   moy_l = [float(dt.strftime('%-m'))/100.0 for dt in dt_sr]
   feat_df['dow'] = dow_l
   feat_df['moy'] = moy_l
-  # I should 1-hot-encode feat_df.updown
-  pdb.set_trace()
-  feat_df['y1h'] = [[0,1] if updown else [1,0] for updown in feat_df.updown]
   return feat_df
 
 
@@ -189,7 +189,10 @@ class Keras11(fr.Resource):
     # I should report Effectiveness:
     effectiveness_f    = predictions_df.eff.sum()
     lo_effectiveness_f = predictions_df.pctlead.sum()
-
+    csv_s              = predictions_df.to_csv(index=False)
+    # I should save predictions to DB:
+    # insert into predictions (tkr,yr2predict,yrs2train,features,csv) values (tkr,int(yr2predict),yrs2train,features,csv_s);
+    
     # I should talk to the End-User:
     return {k1_s:tkr
             ,k2_s:yr2predict
