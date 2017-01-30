@@ -129,7 +129,7 @@ def genf(tkr):
   feat_df['moy'] = moy_l
   # I should 1-hot-encode feat_df.updown
   pdb.set_trace()
-  feat_df['y1h'] = [[0,1] if cclass else [1,0] for cclass in feat_df.updown]
+  feat_df['y1h'] = [[0,1] if updown else [1,0] for updown in feat_df.updown]
   return feat_df
 
 
