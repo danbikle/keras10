@@ -100,6 +100,36 @@ class Keras10(fr.Resource):
 api.add_resource(Keras10, '/keras10/<tkr>/<yr2predict>/<int:yrs2train>')
 # curl localhost:5010/keras10/SPY/2016/25
 
+def genf(tkr):
+  # I should get closing-prices
+  prices0_df         = pd.read_csv('http://ichart.finance.yahoo.com/table.csv?s='+tkr)
+  feat_df = prices0_df[['Date','Close']].sort_values(['Date'])
+  prices1_df.columns = ['cdate','closep']
+  pctlead_sr         = (100.0*(feat_df.closep.shift(-1) - feat_df.closep) / feat_df.closep).fillna(0)
+  feat_df['pctlead'] = np.round(pctlead_sr,3)
+  feat_df['updown']  = [int(pctlead > 0.0) for pctlead in feat_df.pctlead]
+  # I should calculate pctlags:
+  lags_l = [1,2,3,4,5,6,7,8,12,16]
+  for lag_i in lags_l:
+    pctlagx_sr = (100.0*(feat_df.closep - feat_df.closep.shift(lag_i))/feat_df.closep.shift(lag_i)).fillna(0)
+    col_s      = 'pctlag'+str(lag_i)
+    feat_df[col_s] = np.round(pctlagx_sr,4)
+  # I should calculate mvg-avg slopes:
+  slopes_l = [2,3,4,5,6,7,8,9]
+  for slope_i in slopes_l:
+    rollx          = feat_df.rolling(window=slope_i)
+    col_s          = 'slope'+str(slope_i)
+    slope_sr       = 100.0 * (rollx.mean().closep - rollx.mean().closep.shift(1))/rollx.mean().closep
+    feat_df[col_s] = np.round(slope_sr,4)
+  # I should generate Date features:
+  dt_sr = pd.to_datetime(feat_df.cdate)
+  dow_l = [float(dt.strftime('%w' ))/100.0 for dt in dt_sr]
+  moy_l = [float(dt.strftime('%-m'))/100.0 for dt in dt_sr]
+  feat_df['dow'] = dow_l
+  feat_df['moy'] = moy_l
+  return feat_df
+
+
 class Keras11(fr.Resource):
   # I should tell get() about URL-path-tokens:
   def get(self, tkr='SPY', yr2predict='2017', yrs2train=20, features = 'pctlag1,slope2,moy'):
@@ -109,28 +139,20 @@ class Keras11(fr.Resource):
     k4_s   = '4. With '
     algo_s = 'Keras Logistic Regression'
 
-    # I should get prices for tkr:
-    prices0_df = pd.read_csv('http://ichart.finance.yahoo.com/table.csv?s='+tkr)
-
-    prices1_df = prices0_df[['Date','Close']].sort_values(['Date'])
-    prices1_df.columns = ['Date','Price']
-    # I should write genf() next:
+    # I should get prices and features for tkr:
     feat_df = genf(prices1_df)
-    
 
     # I should copy test_yr-observations (about 252) from feat_df into test_yr_df.
-    # See diagram: py4.us/cclasses/class04#r2
-    test_start_sr = (feat_df.Date > yr2predict)
-    test_end_sr   = (feat_df.Date < str(int(yr2predict)+1))
+    test_start_sr = (feat_df.cdate > yr2predict)
+    test_end_sr   = (feat_df.cdate < str(int(yr2predict)+1))
     test_yr_df    = feat_df.copy()[(test_start_sr & test_end_sr)]
 
     # I should copy train_i-years of observations before test_yr from feat_df into train_df
-    # See diagram: py4.us/cclasses/class04#r2
     train_i        = yrs2train
-    train_end_sr   = (feat_df.Date < yr2predict)
+    train_end_sr   = (feat_df.cdate < yr2predict)
     train_start_i  = int(yr2predict) - train_i
     train_start_s  = str(train_start_i)
-    train_start_sr = (feat_df.Date > train_start_s)
+    train_start_sr = (feat_df.cdate > train_start_s)
     train_df       = feat_df.copy()[ train_start_sr & train_end_sr ]
     
     # I should declare x_train to be train_df.pctlag1
@@ -147,7 +169,6 @@ class Keras11(fr.Resource):
     # I should collect predictions for yr2predict
     xtest_a = np.array(test_yr_df.pctlag1).reshape(-1, 1)
     predictions_a = linr_model.predict(xtest_a)
-    # See diagram: py4.us/cclasses/class04#r2
     predictions_l = predictions_a.tolist()
     # I should copy test_yr_df to predictions_df
     predictions_df = test_yr_df.copy()
