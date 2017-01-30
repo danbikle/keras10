@@ -104,7 +104,7 @@ def genf(tkr):
   # I should get closing-prices
   prices0_df         = pd.read_csv('http://ichart.finance.yahoo.com/table.csv?s='+tkr)
   feat_df = prices0_df[['Date','Close']].sort_values(['Date'])
-  prices1_df.columns = ['cdate','closep']
+  feat_df.columns = ['cdate','closep']
   pctlead_sr         = (100.0*(feat_df.closep.shift(-1) - feat_df.closep) / feat_df.closep).fillna(0)
   feat_df['pctlead'] = np.round(pctlead_sr,3)
   feat_df['updown']  = [int(pctlead > 0.0) for pctlead in feat_df.pctlead]
