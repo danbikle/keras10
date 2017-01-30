@@ -165,23 +165,21 @@ class Keras11(fr.Resource):
     # I should declare y_train to be train_df.pctlead
     y_train = train_df.pctlead
     # I should create a Linear Regression model
-    linr_model = skl.LinearRegression()
     # I should use model to "fit" straight line to x_train and y_train
     x_train_a = np.array(x_train)
     y_train_a = np.array(y_train)
-
     # I should use Keras to fit a model here.
     # Keras kmodel wants a 1-hot encoded class.
     ytrain1h_l = [[0,1] if updown else [1,0] for updown in train_df.updown]
     ytrain1h_a = np.array(ytrain1h_l).reshape(-1,2)
-    kmodel = keras.models.Sequential()
+    kmodel     = keras.models.Sequential()
     features_i = len(features_l)
     kmodel.add(keras.layers.core.Dense(features_i, input_shape=(features_i,)))
     kmodel.add(keras.layers.core.Activation('relu'))
     kmodel.add(keras.layers.core.Dense(2)) # because I have 2 classes: up and down
     kmodel.add(keras.layers.core.Activation('softmax'))
     kmodel.compile(loss='categorical_crossentropy', optimizer='adam')
-    kmodel.fit(x_train_a, ytrain1h_a, batch_size=1, nb_epoch=4)
+    kmodel.fit(x_train_a, ytrain1h_a, batch_size=1, nb_epoch=16)
 
     # I should collect predictions for yr2predict
     xtest_a       = np.array(test_yr_df[features_l].fillna(0.0))
@@ -208,11 +206,11 @@ class Keras11(fr.Resource):
     conn = create_engine(db_s).connect()
 
     # I should save predictions to DB:
-    sql_s = 'create table if not exists predictions (tkr varchar, yr2predict int, yrs2train int, features varchar, csv text)'
+    sql_s = 'create table if not exists predictions (tkr varchar, yr2predict int, yrs2train int, features varchar, accuracy float, effectiveness float, csv text)'
     conn.execute(sql_s)
 
-    sql_s = 'insert into predictions (tkr,yr2predict,yrs2train,features,csv) values (%s,%s, %s, %s,%s)'
-    conn.execute(sql_s,[tkr,int(yr2predict),yrs2train,features,csv_s])
+    sql_s = 'insert into predictions (tkr,yr2predict,yrs2train,features,accuracy,effectiveness,csv) values (%s,%s,%s, %s, %s,%s,%s)'
+    conn.execute(sql_s,[tkr,int(yr2predict),yrs2train,features,accuracy,effectiveness,csv_s])
 
     # I should talk to the End-User:
     return {k1_s:tkr
