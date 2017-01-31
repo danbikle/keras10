@@ -280,10 +280,16 @@ class Keras12(fr.Resource):
     if not local: # I should see fl.request.args
       features = fl.request.args.get('features', 'pctlag1,slope3,dom')
     # I should get csv_s from db
-    # select csv from predictions limit 1
-    sql_s = 'select csv from predictions limit 1'
-    result = conn.execute(sql_s)
-    csv_s = [row['csv'] for row in result][0]
+    sql_s = '''select created_at,csv from predictions
+      where tkr      = %s
+      and yr2predict = %s
+      and yrs2train  = %s
+      and features   = %s
+      order by created_at desc limit 1'''
+    result = conn.execute(sql_s,[tkr,yr2predict,yrs2train,features])
+    myrow      = [row for row in result][0]
+    created_at = myrow['created_at']
+    csv_s      = myrow['csv']
     predictions_df = pd.read_csv(io.StringIO(csv_s))
 
     # I should report Accuracy:
@@ -301,6 +307,7 @@ class Keras12(fr.Resource):
             ,'6. Long Only Effectiveness': lo_effectiveness_f
             ,'7. Accuracy':                accuracy_f
             ,'8. Long Only Accuracy':      lo_accuracy_f
+            ,'9. created_at':              created_at
     }
 
 api.add_resource(Keras12, '/keras12/<tkr>/<yr2predict>/<int:yrs2train>')

@@ -10,8 +10,8 @@ import keras10
 # print(oput)
 
 k11 = keras10.Keras11()
-oput = k11.get(local=True, tkr='SPY', yr2predict='2016', yrs2train=25, features='pctlag1,slope2')
+oput = k11.get(local=True, tkr='SPY', yr2predict='2016', yrs2train=25, features='pctlag1,slope2,moy')
 print(oput)
 k12 = keras10.Keras12()
-oput = k12.get(local=True, tkr='SPY', yr2predict='2016', yrs2train=25, features='pctlag1,slope2')
+oput = k12.get(local=True, tkr='SPY', yr2predict='2016', yrs2train=25, features='pctlag1,slope2,moy')
 print(oput)
