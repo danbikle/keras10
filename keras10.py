@@ -141,7 +141,7 @@ def genf(tkr):
 # Then it should generate predictions with Keras and save them to DB.
 class Keras11(fr.Resource):
   # I should tell get() about URL-path-tokens:
-  def get(self, tkr='SPY', yr2predict='2017', yrs2train=20, features = 'pctlag1,slope2,moy'):
+  def get(self, local=False, tkr='SPY', yr2predict='2017', yrs2train=20, features = 'pctlag1,slope2,moy'):
     k1_s   = '1. You want to predict'
     k2_s   = '2. For this year'
     k3_s   = '3. By learning from this many years'
@@ -149,6 +149,8 @@ class Keras11(fr.Resource):
     algo_s = 'Keras Logistic Regression'
 
     # I should get prices and features for tkr:
+    if not local: # I should see fl.request.args
+      features = fl.request.args.get('features', 'pctlag1,slope3,dom')
     features_l = features.split(',')
     col_l      = ['cdate','closep','pctlead','updown']+features_l
     feat_df    = genf(tkr)[col_l]

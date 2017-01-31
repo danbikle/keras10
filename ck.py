@@ -10,5 +10,5 @@ import keras10
 # print(oput)
 
 k11 = keras10.Keras11()
-oput = k11.get(tkr='SPY', yr2predict='2016', yrs2train=25, features='pctlag1,slope2')
+oput = k11.get(local=True, tkr='SPY', yr2predict='2016', yrs2train=25, features='pctlag1,slope2')
 print(oput)
