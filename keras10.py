@@ -265,6 +265,14 @@ class Keras11(fr.Resource):
 api.add_resource(Keras11, '/keras11/<tkr>/<yr2predict>/<int:yrs2train>')
 # curl localhost:5010/keras11/SPY/2016/25
 
+# This class should get predictions from DB.
+class Keras12(fr.Resource):
+  # I should tell get() about URL-path-tokens:
+  def get(self, local=False, tkr='SPY', yr2predict='2017', yrs2train=20, features = 'pctlag1,slope2,moy'):
+    return {'done':'now'}
+api.add_resource(Keras12, '/keras12/<tkr>/<yr2predict>/<int:yrs2train>')
+# curl localhost:5010/keras12/SPY/2016/25
+
 if __name__ == "__main__":
   port = int(os.environ.get("PORT", 5010))
   application.run(host='0.0.0.0', port=port)
