@@ -7,6 +7,7 @@
 # ~/anaconda3/bin/python keras10.py
 # curl localhost:5000/keras10/IBM/2016/9
 
+import io
 import keras
 import pdb
 import os
@@ -268,7 +269,40 @@ api.add_resource(Keras11, '/keras11/<tkr>/<yr2predict>/<int:yrs2train>')
 class Keras12(fr.Resource):
   # I should tell get() about URL-path-tokens:
   def get(self, local=False, tkr='SPY', yr2predict='2017', yrs2train=20, features = 'pctlag1,slope2,moy'):
-    return {'done':'now'}
+
+    k1_s   = '1. You want to predict'
+    k2_s   = '2. For this year'
+    k3_s   = '3. By learning from this many years'
+    k4_s   = '4. With '
+    algo_s = 'Keras Logistic Regression'
+
+    # I should get prices and features for tkr:
+    if not local: # I should see fl.request.args
+      features = fl.request.args.get('features', 'pctlag1,slope3,dom')
+    # I should get csv_s from db
+    # select csv from predictions limit 1
+    sql_s = 'select csv from predictions limit 1'
+    result = conn.execute(sql_s)
+    csv_s = [row['csv'] for row in result][0]
+    predictions_df = pd.read_csv(io.StringIO(csv_s))
+
+    # I should report Accuracy:
+    len_i         = len(predictions_df)
+    accuracy_f    = 100 *  predictions_df.acc.sum()/len_i
+    lo_accuracy_f = 100 * (predictions_df.pctlead>0).astype(int).sum()/len_i
+    # I should report Effectiveness:
+    effectiveness_f    = predictions_df.eff.sum()
+    lo_effectiveness_f = predictions_df.pctlead.sum()
+    return {k1_s:tkr
+            ,k2_s:yr2predict
+            ,k3_s:yrs2train
+            ,k4_s:algo_s
+            ,'5. Effectiveness':           effectiveness_f
+            ,'6. Long Only Effectiveness': lo_effectiveness_f
+            ,'7. Accuracy':                accuracy_f
+            ,'8. Long Only Accuracy':      lo_accuracy_f
+    }
+
 api.add_resource(Keras12, '/keras12/<tkr>/<yr2predict>/<int:yrs2train>')
 # curl localhost:5010/keras12/SPY/2016/25
 
