@@ -21,6 +21,8 @@ from sqlalchemy import create_engine
 application = fl.Flask(__name__)
 api         = fr.Api(application)
 
+# This class should use get prices from Yahoo.
+# Then it should generate predictions with sklearn.
 class Keras10(fr.Resource):
   # I should tell get() about URL-path-tokens:
   def get(self, tkr='AAPL', yr2predict='2017', yrs2train=8):
@@ -102,6 +104,9 @@ class Keras10(fr.Resource):
 api.add_resource(Keras10, '/keras10/<tkr>/<yr2predict>/<int:yrs2train>')
 # curl localhost:5010/keras10/SPY/2016/25
 
+
+# This function should get dates and prices from Yahoo for a tkr.
+# Then it should return a DF full of features.
 def genf(tkr):
   # I should get closing-prices
   prices0_df         = pd.read_csv('http://ichart.finance.yahoo.com/table.csv?s='+tkr)
@@ -132,7 +137,8 @@ def genf(tkr):
   feat_df['moy'] = moy_l
   return feat_df
 
-
+# This class should use genf() to get prices and features for a tkr.
+# Then it should generate predictions with Keras and save them to DB.
 class Keras11(fr.Resource):
   # I should tell get() about URL-path-tokens:
   def get(self, tkr='SPY', yr2predict='2017', yrs2train=20, features = 'pctlag1,slope2,moy'):
