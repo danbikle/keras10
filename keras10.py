@@ -18,6 +18,10 @@ import datetime      as dt
 import sklearn.linear_model as skl
 from sqlalchemy import create_engine
 
+# I should connect to the DB
+db_s = 'postgres://ann:ann@127.0.0.1/ann'
+conn = create_engine(db_s).connect()
+
 application = fl.Flask(__name__)
 api         = fr.Api(application)
 
@@ -207,11 +211,6 @@ class Keras11(fr.Resource):
     effectiveness_f    = predictions_df.eff.sum()
     lo_effectiveness_f = predictions_df.pctlead.sum()
     csv_s              = predictions_df.to_csv(index=False)
-
-    # I should connect to the DB
-
-    db_s = 'postgres://ann:ann@127.0.0.1/ann'
-    conn = create_engine(db_s).connect()
 
     # I should save predictions to DB:
     sql_s = '''create table if not exists predictions 
