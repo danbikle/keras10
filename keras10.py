@@ -221,6 +221,7 @@ class Keras11(fr.Resource):
       ,lo_effectiveness float
       ,accuracy         float
       ,lo_accuracy      float
+      ,created_at       timestamp
       ,csv text)'''
     conn.execute(sql_s)
 
@@ -233,8 +234,9 @@ class Keras11(fr.Resource):
       ,lo_effectiveness
       ,accuracy
       ,lo_accuracy
+      ,created_at
       ,csv)
-      values (%s,%s,%s,  %s,%s,%s,  %s,%s,%s)'''
+      values (%s,%s,%s,  %s,%s,%s,  %s,%s,now(), %s)'''
     conn.execute(sql_s
                  ,[tkr
                    ,int(yr2predict)
@@ -244,6 +246,7 @@ class Keras11(fr.Resource):
                    ,lo_effectiveness_f
                    ,accuracy_f
                    ,lo_accuracy_f
+                   #, created_at supplied by postgres
                    ,csv_s])
 
     # I should talk to the End-User:
