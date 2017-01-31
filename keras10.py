@@ -224,8 +224,27 @@ class Keras11(fr.Resource):
       ,csv text)'''
     conn.execute(sql_s)
 
-    sql_s = 'insert into predictions (tkr,yr2predict,yrs2train,features,effectiveness,lo_effectiveness,accuracy,lo_accuracy,csv) values (%s,%s,%s, %s,%s,%s, %s,%s,%s)'
-    conn.execute(sql_s,[tkr,int(yr2predict),yrs2train,features,effectiveness_f,lo_effectiveness_f,accuracy_f,lo_accuracy_f,csv_s])
+    sql_s = '''insert into predictions
+      (tkr
+      ,yr2predict
+      ,yrs2train
+      ,features
+      ,effectiveness
+      ,lo_effectiveness
+      ,accuracy
+      ,lo_accuracy
+      ,csv)
+      values (%s,%s,%s,  %s,%s,%s,  %s,%s,%s)'''
+    conn.execute(sql_s
+                 ,[tkr
+                   ,int(yr2predict)
+                   ,yrs2train
+                   ,features
+                   ,effectiveness_f
+                   ,lo_effectiveness_f
+                   ,accuracy_f
+                   ,lo_accuracy_f
+                   ,csv_s])
 
     # I should talk to the End-User:
     return {k1_s:tkr
