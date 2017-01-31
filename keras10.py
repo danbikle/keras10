@@ -185,7 +185,7 @@ class Keras11(fr.Resource):
     kmodel.add(keras.layers.core.Dense(2)) # because I have 2 classes: up and down
     kmodel.add(keras.layers.core.Activation('softmax'))
     kmodel.compile(loss='categorical_crossentropy', optimizer='adam')
-    kmodel.fit(x_train_a, ytrain1h_a, batch_size=1, nb_epoch=16)
+    kmodel.fit(x_train_a, ytrain1h_a, batch_size=1, nb_epoch=2)
 
     # I should collect predictions for yr2predict
     xtest_a       = np.array(test_yr_df[features_l].fillna(0.0))
@@ -212,7 +212,16 @@ class Keras11(fr.Resource):
     conn = create_engine(db_s).connect()
 
     # I should save predictions to DB:
-    sql_s = 'create table if not exists predictions (tkr varchar, yr2predict int, yrs2train int, features varchar,effectiveness float,lo_effectiveness float,accuracy float,lo_accuracy float, csv text)'
+    sql_s = '''create table if not exists predictions 
+      (tkr        varchar
+      ,yr2predict int
+      ,yrs2train  int
+      ,features   varchar
+      ,effectiveness    float
+      ,lo_effectiveness float
+      ,accuracy         float
+      ,lo_accuracy      float
+      ,csv text)'''
     conn.execute(sql_s)
 
     sql_s = 'insert into predictions (tkr,yr2predict,yrs2train,features,effectiveness,lo_effectiveness,accuracy,lo_accuracy,csv) values (%s,%s,%s, %s,%s,%s, %s,%s,%s)'
