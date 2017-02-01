@@ -350,6 +350,8 @@ class Keras13(fr.Resource):
     else:
       print('I should get predictions from Keras Service.')
       print([tkr,yr2predict,yrs2train,features])
+      k11 = Keras11()
+      return k11.get(local=True, tkr='SPY', yr2predict='2016', yrs2train=25, features='pctlag1,slope2,moy')
       
     'bye'
     return {'under':'construction'}
