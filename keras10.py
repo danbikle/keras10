@@ -313,6 +313,40 @@ class Keras12(fr.Resource):
 api.add_resource(Keras12, '/keras12/<tkr>/<yr2predict>/<int:yrs2train>')
 # curl localhost:5010/keras12/SPY/2016/25
 
+# This class should try gettting predictions from DB.
+# If not there, this class should get predictions from my Keras service.
+# Demo:
+# k13 = keras10.Keras13()
+# oput = k13.get(local=True, tkr='SPY', yr2predict='2016', yrs2train=25, features='pctlag1,slope2,moy')
+
+class Keras13(fr.Resource):
+  # I should tell get() about URL-path-tokens:
+  def get(self, local=False, tkr='SPY', yr2predict='2017', yrs2train=20, features = 'pctlag1,slope2,moy'):
+
+
+    k1_s   = '1. You want to predict'
+    k2_s   = '2. For this year'
+    k3_s   = '3. By learning from this many years'
+    k4_s   = '4. With '
+    algo_s = 'Keras Logistic Regression'
+
+    # I should get prices and features for tkr:
+    if not local: # I should see fl.request.args
+      features = fl.request.args.get('features', 'pctlag1,slope3,dom')
+    # I should get csv_s from db
+    sql_s = '''select created_at,csv from predictions
+      where tkr      = %s
+      and yr2predict = %s
+      and yrs2train  = %s
+      and features   = %s
+      order by created_at desc limit 1'''
+    result = conn.execute(sql_s,[tkr,yr2predict,yrs2train,features])
+    # in sqlalchemy how to test if result is empty?
+    # in sqlalchemy how to test for zero rows?
+    # in sqlalchemy how to test for 0 rows?
+    'bye'
+    return {'under':'construction'}
+
 if __name__ == "__main__":
   port = int(os.environ.get("PORT", 5010))
   application.run(host='0.0.0.0', port=port)
