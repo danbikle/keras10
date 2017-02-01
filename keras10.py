@@ -342,8 +342,15 @@ class Keras13(fr.Resource):
       order by created_at desc limit 1'''
     result = conn.execute(sql_s,[tkr,yr2predict,yrs2train,features])
     # in sqlalchemy how to test if result is empty?
-    # in sqlalchemy how to test for zero rows?
-    # in sqlalchemy how to test for 0 rows?
+    # http://docs.sqlalchemy.org/en/latest/core/connections.html#sqlalchemy.engine.ResultProxy.returns_rows
+    pdb.set_trace()
+    if result.rowcount:
+      print('I should get predictions from DB.')
+      print([tkr,yr2predict,yrs2train,features])
+    else:
+      print('I should get predictions from Keras Service.')
+      print([tkr,yr2predict,yrs2train,features])
+      
     'bye'
     return {'under':'construction'}
 
