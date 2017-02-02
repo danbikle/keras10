@@ -36,6 +36,19 @@ python import_keras10.py
 ```
   * I did the above demo in my virtualbox and I saw this:
 ```bash
-
+ann@ub16feb:~/keras10$ 
+ann@ub16feb:~/keras10$ cd ~/keras10
+ann@ub16feb:~/keras10$ 
+ann@ub16feb:~/keras10$ python import_keras10.py
+Using Theano backend.
+Epoch 1/2
+5774/5774 [==============================] - 1s - loss: 0.6958     
+Epoch 2/2
+5774/5774 [==============================] - 1s - loss: 0.6915     
+I should get predictions from DB.
+{'3. By learning from this many years': 24, '8. Long Only Accuracy': 50.19762845849802, '7. Accuracy': 50.19762845849802, '6. Long Only Effectiveness': -35.858000000000004, '4. With ': 'Keras Logistic Regression', '1. You want to predict': 'SPY', '5. Effectiveness': 28.391999999999992, '2. For this year': '2008'}
+ann@ub16feb:~/keras10$ 
+ann@ub16feb:~/keras10$ 
+ann@ub16feb:~/keras10$ 
 ```
 
