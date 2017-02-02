@@ -5,7 +5,6 @@
 # Demo:
 # export FLASK_DEBUG=1
 # ~/anaconda3/bin/python keras10.py
-# curl localhost:5000/skservice/IBM/2016/9
 
 import io
 import keras
@@ -40,24 +39,20 @@ class SKService(fr.Resource):
     # I should get prices for tkr:
     prices0_df = pd.read_csv('http://ichart.finance.yahoo.com/table.csv?s='+tkr)
 
-    # See diagram: py4.us/cclasses/class04#r2
     prices1_df = prices0_df[['Date','Close']].sort_values(['Date'])
     prices1_df.columns = ['Date','Price']
     
     # Create feat_df from prices1_df, pctlead, pctlag1    
-    # See diagram: py4.us/cclasses/class04#r2
     feat_df = prices1_df.copy()
     feat_df['pctlead'] = (100.0 * (feat_df.Price.shift(-1) - feat_df.Price) / feat_df.Price).fillna(0)
     feat_df['pctlag1'] = feat_df.pctlead.shift(1).fillna(0)
 
     # I should copy test_yr-observations (about 252) from feat_df into test_yr_df.
-    # See diagram: py4.us/cclasses/class04#r2
     test_start_sr = (feat_df.Date > yr2predict)
     test_end_sr   = (feat_df.Date < str(int(yr2predict)+1))
     test_yr_df    = feat_df.copy()[(test_start_sr & test_end_sr)]
 
     # I should copy train_i-years of observations before test_yr from feat_df into train_df
-    # See diagram: py4.us/cclasses/class04#r2
     train_i        = yrs2train
     train_end_sr   = (feat_df.Date < yr2predict)
     train_start_i  = int(yr2predict) - train_i
@@ -77,9 +72,8 @@ class SKService(fr.Resource):
     linr_model.fit(x_train_a,y_train_a)
 
     # I should collect predictions for yr2predict
-    xtest_a = np.array(test_yr_df.pctlag1).reshape(-1, 1)
+    xtest_a       = np.array(test_yr_df.pctlag1).reshape(-1, 1)
     predictions_a = linr_model.predict(xtest_a)
-    # See diagram: py4.us/cclasses/class04#r2
     predictions_l = predictions_a.tolist()
     # I should copy test_yr_df to predictions_df
     predictions_df = test_yr_df.copy()
@@ -262,8 +256,8 @@ class KerasService(fr.Resource):
             ,'8. Long Only Accuracy':      lo_accuracy_f
     }
 # I should declare URL-path-tokens, and I should constrain them:
-api.add_resource(KerasService, '/keras11/<tkr>/<yr2predict>/<int:yrs2train>')
-# curl localhost:5010/keras11/SPY/2016/25
+api.add_resource(KerasService, '/keras/<tkr>/<yr2predict>/<int:yrs2train>')
+# curl localhost:5010/keras/SPY/2016/25?features=pctlag1,pctlag2,slope2,slope4,dow,moy
 
 # This class should get predictions from DB.
 class DBService(fr.Resource):
@@ -310,8 +304,8 @@ class DBService(fr.Resource):
             ,'9. created_at':              created_at
     }
 
-api.add_resource(DBService, '/keras12/<tkr>/<yr2predict>/<int:yrs2train>')
-# curl localhost:5010/keras12/SPY/2016/25
+api.add_resource(DBService, '/db/<tkr>/<yr2predict>/<int:yrs2train>')
+# curl localhost:5010/db/SPY/2016/25?features=pctlag1,pctlag2,slope2,slope4,dow,moy
 
 # This class should try gettting predictions from DB.
 # If not there, this class should get predictions from my Keras service.
@@ -319,17 +313,9 @@ api.add_resource(DBService, '/keras12/<tkr>/<yr2predict>/<int:yrs2train>')
 # k13 = keras10.Keras13()
 # oput = k13.get(local=True, tkr='SPY', yr2predict='2016', yrs2train=25, features='pctlag1,slope2,moy')
 
-class Keras13(fr.Resource):
+class DBKerasService(fr.Resource):
   # I should tell get() about URL-path-tokens:
   def get(self, local=False, tkr='SPY', yr2predict='2017', yrs2train=20, features = 'pctlag1,slope2,moy'):
-
-
-    k1_s   = '1. You want to predict'
-    k2_s   = '2. For this year'
-    k3_s   = '3. By learning from this many years'
-    k4_s   = '4. With '
-    algo_s = 'Keras Logistic Regression'
-
     # I should get prices and features for tkr:
     if not local: # I should see fl.request.args
       features = fl.request.args.get('features', 'pctlag1,slope3,dom')
@@ -351,8 +337,9 @@ class Keras13(fr.Resource):
       print('I should get predictions from Keras Service.')
       ks0 = KerasService()
       return ks0.get(local=True, tkr=tkr, yr2predict=yr2predict, yrs2train=yrs2train, features=features)
-    'bye'
     return {'no':'services called'}
+api.add_resource(DBKerasService, '/dbkeras/<tkr>/<yr2predict>/<int:yrs2train>')
+# curl localhost:5010/dbkeras/SPY/2016/25?features=pctlag1,pctlag2,slope2,slope4,dow,moy
 
 if __name__ == "__main__":
   port = int(os.environ.get("PORT", 5010))
