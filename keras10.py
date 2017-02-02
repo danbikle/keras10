@@ -144,7 +144,7 @@ def genf(tkr):
 
 # This class should use genf() to get prices and features for a tkr.
 # Then it should generate predictions with Keras and save them to DB.
-class Keras11(fr.Resource):
+class KerasService(fr.Resource):
   # I should tell get() about URL-path-tokens:
   def get(self, local=False, tkr='SPY', yr2predict='2017', yrs2train=20, features = 'pctlag1,slope2,moy'):
     k1_s   = '1. You want to predict'
@@ -262,11 +262,11 @@ class Keras11(fr.Resource):
             ,'8. Long Only Accuracy':      lo_accuracy_f
     }
 # I should declare URL-path-tokens, and I should constrain them:
-api.add_resource(Keras11, '/keras11/<tkr>/<yr2predict>/<int:yrs2train>')
+api.add_resource(KerasService, '/keras11/<tkr>/<yr2predict>/<int:yrs2train>')
 # curl localhost:5010/keras11/SPY/2016/25
 
 # This class should get predictions from DB.
-class Keras12(fr.Resource):
+class DBService(fr.Resource):
   # I should tell get() about URL-path-tokens:
   def get(self, local=False, tkr='SPY', yr2predict='2017', yrs2train=20, features = 'pctlag1,slope2,moy'):
 
@@ -310,7 +310,7 @@ class Keras12(fr.Resource):
             ,'9. created_at':              created_at
     }
 
-api.add_resource(Keras12, '/keras12/<tkr>/<yr2predict>/<int:yrs2train>')
+api.add_resource(DBService, '/keras12/<tkr>/<yr2predict>/<int:yrs2train>')
 # curl localhost:5010/keras12/SPY/2016/25
 
 # This class should try gettting predictions from DB.
@@ -343,18 +343,17 @@ class Keras13(fr.Resource):
     result = conn.execute(sql_s,[tkr,yr2predict,yrs2train,features])
     # in sqlalchemy how to test if result is empty?
     # http://docs.sqlalchemy.org/en/latest/core/connections.html#sqlalchemy.engine.ResultProxy.returns_rows
-    pdb.set_trace()
     if result.rowcount:
       print('I should get predictions from DB.')
-      print([tkr,yr2predict,yrs2train,features])
+      db0 = DBService()
+      return db0.get(local=True, tkr=tkr, yr2predict=yr2predict, yrs2train=yrs2train, features=features)
     else:
       print('I should get predictions from Keras Service.')
-      print([tkr,yr2predict,yrs2train,features])
-      k11 = Keras11()
-      return k11.get(local=True, tkr='SPY', yr2predict='2016', yrs2train=25, features='pctlag1,slope2,moy')
+      ks0 = KerasService()
+      return ks0.get(local=True, tkr=tkr, yr2predict=yr2predict, yrs2train=yrs2train, features=features)
       
     'bye'
-    return {'under':'construction'}
+    return {'no':'services called'}
 
 if __name__ == "__main__":
   port = int(os.environ.get("PORT", 5010))

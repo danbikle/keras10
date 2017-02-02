@@ -17,5 +17,5 @@ import keras10
 # print(oput)
 
 k13 = keras10.Keras13()
-oput = k13.get(local=True, tkr='SPY', yr2predict='2010', yrs2train=25, features='pctlag1,slope2,moy')
+oput = k13.get(local=True, tkr='SPY', yr2predict='2011', yrs2train=24, features='pctlag1,slope2,dow,moy')
 print(oput)
