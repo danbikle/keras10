@@ -52,3 +52,13 @@ ann@ub16feb:~/keras10$
 ann@ub16feb:~/keras10$ 
 ```
 
+
+  * Run the next demo with a simple shell command:
+```bash
+cd ~/keras10
+./flask10.bash
+```
+
+  * I did the above demo in my virtualbox and I saw this:
+```bash
+```
