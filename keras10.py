@@ -281,6 +281,8 @@ class DBService(fr.Resource):
       and features   = %s
       order by created_at desc limit 1'''
     result = conn.execute(sql_s,[tkr,yr2predict,yrs2train,features])
+    if not result.rowcount:
+      return {'no': 'data found'}
     myrow      = [row for row in result][0]
     created_at = myrow['created_at']
     csv_s      = myrow['csv']
