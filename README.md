@@ -192,9 +192,9 @@ CREATE DATABASE ann;
 exit
 ```
   * Ensure that you are in the ann Linux account:
-  ```bash
-  id
-  ```
+```bash
+id
+```
   * At this point you have a role inside of Postgres named ann which has password: ann
 
   * Next, run these shell commands to install Anaconda:
