@@ -136,4 +136,33 @@ ann@ub16feb:~/keras10$
 
 # Detailed Instructions
 
-UNDER CONSTRUCTION
+  * These instructions assume that you have Linux training
+  * Also you should know how to interact with a shell in a terminal
+  * If Linux and shell are new to you, you will need some training before going further
+  * Here are paths toward free training:
+  * http://www.google.com/search?q=Simple+Linux+Tutorial
+  * http://www.google.com/search?q=Simple+Shell+Tutorial
+  * http://www.google.com/search?tbm=vid&q=Simple+Linux+Tutorial
+  * http://www.google.com/search?tbm=vid&q=Simple+Shell+Tutorial
+  * The detailed instructions assume that you have a laptop which can run VirtualBox
+  * You can get VirtualBox from this URL:
+  * https://www.virtualbox.org/wiki/Downloads
+  * After you install VirtualBox, you should install Ubuntu16 inside of VirtualBox
+  * Ubuntu16 is at this URL:
+  * http://releases.ubuntu.com/xenial/ubuntu-16.04.1-desktop-amd64.iso
+  * If you need help installing Ubuntu16 inside of VirtualBox, the links below might be helpful
+  * http://www.google.com/search?q=how+to+install+ubuntu16+inside+VirtualBox
+  * http://www.google.com/search?tbm=vid&q=how+to+install+ubuntu16+inside+VirtualBox
+  * After you install Ubuntu16, you should install an account named 'ann'
+  * Shell commands to install ann account:
+```bash
+sudo useradd -m -s /bin/bash -G sudo ann
+sudo passwd ann
+```
+  * Next login as ann
+  * After you login as ann, run these shell commands to install Anaconda:
+```bash
+
+```
+
+
