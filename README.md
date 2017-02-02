@@ -28,3 +28,8 @@ I suggest that you follow the Simple Instructions.
 ```bash
 conda install -c conda-forge flask-restful
 ```
+  * clone the keras10 repo with this shell syntax:
+```bash
+cd ~
+git clone https://github.com/danbikle/keras10
+```
