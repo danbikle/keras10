@@ -24,10 +24,6 @@ I suggest that you follow the Simple Instructions.
   * https://drive.google.com/file/d/0Bx3iDDAtxxI4RVZuWmVZXzIxUWM
   * Above Appliance is 7.1 GB
   * Start the appliance and login as ann, passwd: a
-  * Install flask-restful from conda-forge into Anaconda:
-```bash
-conda install -c conda-forge flask-restful
-```
   * Clone the keras10 repo with this shell syntax:
 ```bash
 cd ~
