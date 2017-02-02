@@ -162,7 +162,27 @@ sudo passwd ann
   * Next login as ann
   * After you login as ann, run these shell commands to install Anaconda:
 ```bash
-
+cd ~/ann
+rm -f Anaconda3-4.2.0-Linux-x86_64.sh
+rm -rf anaconda anaconda3
+wget https://repo.continuum.io/archive/Anaconda3-4.2.0-Linux-x86_64.sh
+bash Anaconda3-4.2.0-Linux-x86_64.sh
+mv anaconda3/bin/curl anaconda3/bin/curl_ana
+echo 'export PATH=${HOME}/anaconda3/bin:$PATH' >> ~/.bashrc
+bash
 ```
+  * The syntax above is designed to behave well if run it multiple times
+  * This means that if you run the above syntax 4 times, you should end up with Anaconda installed
+  * Next, you should enhance your copy of Ubuntu 16:
+```bash
+sudo apt-get install autoconf bison build-essential libssl-dev libyaml-dev    \
+libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm3 curl          \
+libgdbm-dev libsqlite3-dev gitk postgresql postgresql-server-dev-all aptitude \
+libpq-dev emacs wget openssh-server libbz2-dev linux-headers-$(uname -r)
+```
+  * After the above command finishes, you should reboot Ubuntu16
+  
 
+
+  
 
