@@ -1,11 +1,11 @@
 # keras10.py
 
-# This script should use Keras, SQLAlchemy, and Flask-RESTful to generate stock market predictions.
+# This script should use Keras, sklearn, SQLAlchemy, and Flask-RESTful to generate stock market predictions.
 
 # Demo:
 # export FLASK_DEBUG=1
 # ~/anaconda3/bin/python keras10.py
-# curl localhost:5000/keras10/IBM/2016/9
+# curl localhost:5000/skservice/IBM/2016/9
 
 import io
 import keras
@@ -28,7 +28,7 @@ api         = fr.Api(application)
 
 # This class should use get prices from Yahoo.
 # Then it should generate predictions with sklearn.
-class Keras10(fr.Resource):
+class SKService(fr.Resource):
   # I should tell get() about URL-path-tokens:
   def get(self, tkr='AAPL', yr2predict='2017', yrs2train=8):
     k1_s   = '1. You want to predict'
@@ -106,8 +106,8 @@ class Keras10(fr.Resource):
             ,'8. Long Only Effectiveness': lo_effectiveness_f
     }
 # I should declare URL-path-tokens, and I should constrain them:
-api.add_resource(Keras10, '/keras10/<tkr>/<yr2predict>/<int:yrs2train>')
-# curl localhost:5010/keras10/SPY/2016/25
+api.add_resource(SKService, '/skservice/<tkr>/<yr2predict>/<int:yrs2train>')
+# curl localhost:5010/skservice/SPY/2016/25
 
 
 # This function should get dates and prices from Yahoo for a tkr.
@@ -351,7 +351,6 @@ class Keras13(fr.Resource):
       print('I should get predictions from Keras Service.')
       ks0 = KerasService()
       return ks0.get(local=True, tkr=tkr, yr2predict=yr2predict, yrs2train=yrs2train, features=features)
-      
     'bye'
     return {'no':'services called'}
 
