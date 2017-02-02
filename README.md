@@ -133,3 +133,7 @@ ann@ub16feb:~/keras10$ bash -x curlem.bash
 ann@ub16feb:~/keras10$ 
 ann@ub16feb:~/keras10$
 ```
+
+# Detailed Instructions
+
+UNDER CONSTRUCTION
