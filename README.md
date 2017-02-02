@@ -213,7 +213,7 @@ bash
   * This means that if you run the above syntax 4 times, you should end up with Anaconda installed
   * Next, install some packages into Anaconda:
 ```bash
-conda -c conda-forge install flask-restful
+conda install -c conda-forge flask-restful
 ```
   * Next, install more packages into Anaconda:
 ```bash
