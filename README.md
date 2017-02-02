@@ -200,7 +200,7 @@ id
   * Next, run these shell commands to install Anaconda:
 ```bash
 id
-cd ~/ann
+cd ~ann
 rm -f Anaconda3-4.2.0-Linux-x86_64.sh
 rm -rf anaconda anaconda3
 wget https://repo.continuum.io/archive/Anaconda3-4.2.0-Linux-x86_64.sh
