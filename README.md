@@ -181,8 +181,31 @@ libgdbm-dev libsqlite3-dev gitk postgresql postgresql-server-dev-all aptitude \
 libpq-dev emacs wget openssh-server libbz2-dev linux-headers-$(uname -r)
 ```
   * After the above command finishes, you should reboot Ubuntu16
+  * Next you should create a role inside of Postgres named ann which has password: ann
+  * The commands below do that:
+```bash
+sudo su - postgres
+```
+  * Now, you should be inside the postgres Linux account:
+```bash
+psql
+```
+  * Now, you should be inside the postgres Database account
+```sql
+CREATE ROLE ANN WITH LOGIN SUPERUSER PASSWORD 'ann';
+CREATE DATABASE ann;
+```
+  * Now, here is the tricky part. Many students fail here.
+  * Exit the Database account:
+```sql
+\q
+```
+  * Exit the postgres Linux account:
+```bash
+exit
+```
+  * Ensure that you are in the ann Linux account:
+  ```bash
+  id
+  ```
   
-
-
-  
-
