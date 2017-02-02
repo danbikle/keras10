@@ -8,6 +8,7 @@ export FLASK_DEBUG=1
 export PORT=5010
 ~/anaconda3/bin/python keras10.py
 
-# curl localhost:5000/k10/SPY/2016/25
+# In other shell I could run this:
+# bash -x curlem.bash
 
 exit

@@ -303,7 +303,6 @@ class DBService(fr.Resource):
             ,'6. Long Only Effectiveness': lo_effectiveness_f
             ,'7. Accuracy':                accuracy_f
             ,'8. Long Only Accuracy':      lo_accuracy_f
-            ,'9. created_at':              created_at
     }
 
 api.add_resource(DBService, '/db/<tkr>/<yr2predict>/<int:yrs2train>')
