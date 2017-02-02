@@ -144,7 +144,7 @@ ann@ub16feb:~/keras10$
   * http://www.google.com/search?q=Simple+Shell+Tutorial
   * http://www.google.com/search?tbm=vid&q=Simple+Linux+Tutorial
   * http://www.google.com/search?tbm=vid&q=Simple+Shell+Tutorial
-  * The detailed instructions assume that you have a laptop which can run VirtualBox
+  * The detailed instructions below, assume that you have a laptop which can run VirtualBox
   * You can get VirtualBox from this URL:
   * https://www.virtualbox.org/wiki/Downloads
   * After you install VirtualBox, you should install Ubuntu16 inside of VirtualBox
@@ -160,19 +160,6 @@ sudo useradd -m -s /bin/bash -G sudo ann
 sudo passwd ann
 ```
   * Next login as ann
-  * After you login as ann, run these shell commands to install Anaconda:
-```bash
-cd ~/ann
-rm -f Anaconda3-4.2.0-Linux-x86_64.sh
-rm -rf anaconda anaconda3
-wget https://repo.continuum.io/archive/Anaconda3-4.2.0-Linux-x86_64.sh
-bash Anaconda3-4.2.0-Linux-x86_64.sh
-mv anaconda3/bin/curl anaconda3/bin/curl_ana
-echo 'export PATH=${HOME}/anaconda3/bin:$PATH' >> ~/.bashrc
-bash
-```
-  * The syntax above is designed to behave well if run it multiple times
-  * This means that if you run the above syntax 4 times, you should end up with Anaconda installed
   * Next, you should enhance your copy of Ubuntu 16:
 ```bash
 sudo apt-get install autoconf bison build-essential libssl-dev libyaml-dev    \
@@ -208,4 +195,124 @@ exit
   ```bash
   id
   ```
+  * At this point you have a role inside of Postgres named ann which has password: ann
+
+  * Next, run these shell commands to install Anaconda:
+```bash
+id
+cd ~/ann
+rm -f Anaconda3-4.2.0-Linux-x86_64.sh
+rm -rf anaconda anaconda3
+wget https://repo.continuum.io/archive/Anaconda3-4.2.0-Linux-x86_64.sh
+bash Anaconda3-4.2.0-Linux-x86_64.sh
+mv anaconda3/bin/curl anaconda3/bin/curl_ana
+echo 'export PATH=${HOME}/anaconda3/bin:$PATH' >> ~/.bashrc
+bash
+```
+  * The syntax above is designed to behave well if you run it multiple times
+  * This means that if you run the above syntax 4 times, you should end up with Anaconda installed
+  * Next, install some packages into Anaconda:
+```bash
+conda -c conda-forge install flask-restful
+```
+  * Next, install more packages into Anaconda:
+```bash
+conda install psycopg2
+conda install keras
+```
+
+  * Next, Clone the keras10 repo with this shell syntax:
+```bash
+cd ~
+git clone https://github.com/danbikle/keras10
+```
+  * Then, Run the first demo with a simple shell command:
+```bash
+cd ~/keras10
+python import_keras10.py
+```
   
+
+  * Run the next demo with a simple shell command:
+```bash
+cd ~/keras10
+./flask10.bash
+```
+
+  * I did the above demo in my virtualbox and I saw this:
+```bash
+ann@ub16feb:~$ 
+ann@ub16feb:~$ cd ~/keras10/
+ann@ub16feb:~/keras10$ 
+ann@ub16feb:~/keras10$ ./flask10.bash 
+Using Theano backend.
+ * Running on http://0.0.0.0:5010/ (Press CTRL+C to quit)
+ * Restarting with stat
+Using Theano backend.
+ * Debugger is active!
+ * Debugger pin code: 145-554-526
+```
+
+  * The above shell is running a webserver. You should leave it alone.
+  * The next demo requires another shell. So, start another shell.
+  * Run the next demo with a simple shell command:
+```bash
+cd ~/keras10
+bash -x curlem.bash
+```
+  * I did the above demo in my virtualbox and I saw this:
+```bash
+
+ann@ub16feb:~$ 
+ann@ub16feb:~$ cd ~/keras10
+ann@ub16feb:~/keras10$ 
+ann@ub16feb:~/keras10$ bash -x curlem.bash
++ curl localhost:5010/skservice/SPY/2016/25
+{
+    "1. You want to predict": "SPY",
+    "2. For this year": "2016",
+    "3. By learning from this many years": 25,
+    "4. With ": "Linear Regression",
+    "5. Accuracy": 55.55555555555556,
+    "6. Long Only Accuracy": 54.36507936507937,
+    "7. Effectiveness": 28.21438991556794,
+    "8. Long Only Effectiveness": 12.23161707633516
+}
++ curl 'localhost:5010/keras/SPY/2016/25?features=pctlag1,pctlag2,slope2,slope4,dow,moy'
+{
+    "1. You want to predict": "SPY",
+    "2. For this year": "2016",
+    "3. By learning from this many years": 25,
+    "4. With ": "Keras Logistic Regression",
+    "5. Effectiveness": 17.058000000000014,
+    "6. Long Only Effectiveness": 12.229999999999992,
+    "7. Accuracy": 54.36507936507937,
+    "8. Long Only Accuracy": 54.36507936507937
+}
++ curl 'localhost:5010/db/SPY/2016/25?features=pctlag1,pctlag2,slope2,slope4,dow,moy'
+{
+    "1. You want to predict": "SPY",
+    "2. For this year": "2016",
+    "3. By learning from this many years": 25,
+    "4. With ": "Keras Logistic Regression",
+    "5. Effectiveness": 17.058000000000014,
+    "6. Long Only Effectiveness": 12.229999999999995,
+    "7. Accuracy": 54.36507936507937,
+    "8. Long Only Accuracy": 54.36507936507937
+}
++ curl 'localhost:5010/dbkeras/SPY/2016/25?features=pctlag1,pctlag2,slope2,slope4,dow,moy'
+{
+    "1. You want to predict": "SPY",
+    "2. For this year": "2016",
+    "3. By learning from this many years": 25,
+    "4. With ": "Keras Logistic Regression",
+    "5. Effectiveness": 17.058000000000014,
+    "6. Long Only Effectiveness": 12.229999999999995,
+    "7. Accuracy": 54.36507936507937,
+    "8. Long Only Accuracy": 54.36507936507937
+}
+ann@ub16feb:~/keras10$ 
+ann@ub16feb:~/keras10$
+```
+
+That completes the Detailed Instructions.
