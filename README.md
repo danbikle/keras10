@@ -27,6 +27,7 @@ I suggest that you follow the Simple Instructions.
   * Clone the keras10 repo with this shell syntax:
 ```bash
 cd ~
+rm -rf keras10
 git clone https://github.com/danbikle/keras10
 ```
   * Run the first demo with a simple shell command:
