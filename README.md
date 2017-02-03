@@ -21,8 +21,8 @@ I suggest that you follow the Simple Instructions.
 
   * Install VirtualBox on your laptop
   * Import this VirtualBox Appliance:
-  * https://drive.google.com/file/d/0Bx3iDDAtxxI4RVZuWmVZXzIxUWM
-  * Above Appliance is 7.1 GB
+  * https://drive.google.com/file/d/0Bx3iDDAtxxI4U3oycjR0RXpJblU
+  * Above Appliance is 8.1 GB
   * Start the appliance and login as ann, passwd: a
   * Clone the keras10 repo with this shell syntax:
 ```bash
