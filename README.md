@@ -1,5 +1,9 @@
 # README.md
 
+This repo is discussed in my class:
+
+http://py4.us/cclasses/class05
+
 This repo is a mix of technology to help end-users forecast the stock market closing price tomorrow:
 
   * Anaconda Python 4.2.0
@@ -82,7 +86,6 @@ bash -x curlem.bash
 ```
   * I did the above demo in my virtualbox and I saw this:
 ```bash
-
 ann@ub16feb:~$ 
 ann@ub16feb:~$ cd ~/keras10
 ann@ub16feb:~/keras10$ 
@@ -155,7 +158,7 @@ ann@ub16feb:~/keras10$
   * http://www.google.com/search?q=how+to+install+ubuntu16+inside+VirtualBox
   * http://www.google.com/search?tbm=vid&q=how+to+install+ubuntu16+inside+VirtualBox
   * After you install Ubuntu16, you should install an account named 'ann'
-  * Shell commands to install ann account:
+  * Shell commands to install the ann account are listed below:
 ```bash
 sudo useradd -m -s /bin/bash -G sudo ann
 sudo passwd ann
