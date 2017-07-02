@@ -37,7 +37,7 @@ class SKService(fr.Resource):
     algo_s = 'Linear Regression'
 
     # I should get prices for tkr:
-    prices0_df = pd.read_csv('http://tkrpice.herokuapp.com/static/CSV/usplit/'+tkr)
+    prices0_df = pd.read_csv('http://tkrprice.herokuapp.com/static/CSV/usplit/'+tkr+'.csv')
     prices1_df = prices0_df.sort_values(['cdate'])
     
     # Create feat_df from prices1_df, pctlead, pctlag1    
@@ -106,7 +106,7 @@ api.add_resource(SKService, '/skservice/<tkr>/<yr2predict>/<int:yrs2train>')
 # Then it should return a DF full of features.
 def genf(tkr):
   # I should get closing-prices
-  prices0_df         = pd.read_csv('http://tkrpice.herokuapp.com/static/CSV/usplit/'+tkr)
+  prices0_df         = pd.read_csv('http://tkrprice.herokuapp.com/static/CSV/usplit/'+tkr+'.csv')
   feat_df            = prices0_df.sort_values(['cdate'])
   pctlead_sr         = (100.0*(feat_df.uscp.shift(-1) - feat_df.uscp) / feat_df.uscp).fillna(0)
   feat_df['pctlead'] = np.round(pctlead_sr,3)
