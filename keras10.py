@@ -37,14 +37,12 @@ class SKService(fr.Resource):
     algo_s = 'Linear Regression'
 
     # I should get prices for tkr:
-    prices0_df = pd.read_csv('http://ichart.finance.yahoo.com/table.csv?s='+tkr)
-
-    prices1_df = prices0_df[['Date','Close']].sort_values(['Date'])
-    prices1_df.columns = ['Date','Price']
+    prices0_df = pd.read_csv('http://tkrpice.herokuapp.com/static/CSV/usplit/'+tkr)
+    prices1_df = prices0_df.sort_values(['cdate'])
     
     # Create feat_df from prices1_df, pctlead, pctlag1    
     feat_df = prices1_df.copy()
-    feat_df['pctlead'] = (100.0 * (feat_df.Price.shift(-1) - feat_df.Price) / feat_df.Price).fillna(0)
+    feat_df['pctlead'] = (100.0 * (feat_df.uscp.shift(-1) - feat_df.uscp) / feat_df.uscp).fillna(0)
     feat_df['pctlag1'] = feat_df.pctlead.shift(1).fillna(0)
 
     # I should copy test_yr-observations (about 252) from feat_df into test_yr_df.
@@ -108,17 +106,16 @@ api.add_resource(SKService, '/skservice/<tkr>/<yr2predict>/<int:yrs2train>')
 # Then it should return a DF full of features.
 def genf(tkr):
   # I should get closing-prices
-  prices0_df         = pd.read_csv('http://ichart.finance.yahoo.com/table.csv?s='+tkr)
-  feat_df = prices0_df[['Date','Close']].sort_values(['Date'])
-  feat_df.columns = ['cdate','closep']
-  pctlead_sr         = (100.0*(feat_df.closep.shift(-1) - feat_df.closep) / feat_df.closep).fillna(0)
+  prices0_df         = pd.read_csv('http://tkrpice.herokuapp.com/static/CSV/usplit/'+tkr)
+  feat_df            = prices0_df.sort_values(['cdate'])
+  pctlead_sr         = (100.0*(feat_df.uscp.shift(-1) - feat_df.uscp) / feat_df.uscp).fillna(0)
   feat_df['pctlead'] = np.round(pctlead_sr,3)
   feat_df['updown']  = [int(pctlead > 0.0) for pctlead in feat_df.pctlead]
   
   # I should calculate pctlags:
   lags_l = [1,2,3,4,5,6,7,8,12,16]
   for lag_i in lags_l:
-    pctlagx_sr = (100.0*(feat_df.closep - feat_df.closep.shift(lag_i))/feat_df.closep.shift(lag_i)).fillna(0)
+    pctlagx_sr = (100.0*(feat_df.uscp - feat_df.uscp.shift(lag_i))/feat_df.uscp.shift(lag_i)).fillna(0)
     col_s      = 'pctlag'+str(lag_i)
     feat_df[col_s] = np.round(pctlagx_sr,4)
   # I should calculate mvg-avg slopes:
@@ -126,7 +123,7 @@ def genf(tkr):
   for slope_i in slopes_l:
     rollx          = feat_df.rolling(window=slope_i)
     col_s          = 'slope'+str(slope_i)
-    slope_sr       = 100.0 * (rollx.mean().closep - rollx.mean().closep.shift(1))/rollx.mean().closep
+    slope_sr       = 100.0 * (rollx.mean().uscp - rollx.mean().uscp.shift(1))/rollx.mean().uscp
     feat_df[col_s] = np.round(slope_sr,4)
   # I should generate Date features:
   dt_sr = pd.to_datetime(feat_df.cdate)
@@ -151,7 +148,7 @@ class KerasService(fr.Resource):
     if not local: # I should see fl.request.args
       features = fl.request.args.get('features', 'pctlag1,slope3,dom')
     features_l = features.split(',')
-    col_l      = ['cdate','closep','pctlead','updown']+features_l
+    col_l      = ['cdate','uscp','pctlead','updown']+features_l
     feat_df    = genf(tkr)[col_l]
 
     # I should copy test_yr-observations (about 252) from feat_df into test_yr_df.
