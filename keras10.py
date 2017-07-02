@@ -46,16 +46,16 @@ class SKService(fr.Resource):
     feat_df['pctlag1'] = feat_df.pctlead.shift(1).fillna(0)
 
     # I should copy test_yr-observations (about 252) from feat_df into test_yr_df.
-    test_start_sr = (feat_df.Date > yr2predict)
-    test_end_sr   = (feat_df.Date < str(int(yr2predict)+1))
+    test_start_sr = (feat_df.cdate > yr2predict)
+    test_end_sr   = (feat_df.cdate < str(int(yr2predict)+1))
     test_yr_df    = feat_df.copy()[(test_start_sr & test_end_sr)]
 
     # I should copy train_i-years of observations before test_yr from feat_df into train_df
     train_i        = yrs2train
-    train_end_sr   = (feat_df.Date < yr2predict)
+    train_end_sr   = (feat_df.cdate < yr2predict)
     train_start_i  = int(yr2predict) - train_i
     train_start_s  = str(train_start_i)
-    train_start_sr = (feat_df.Date > train_start_s)
+    train_start_sr = (feat_df.cdate > train_start_s)
     train_df       = feat_df.copy()[ train_start_sr & train_end_sr ]
     
     # I should declare x_train to be train_df.pctlag1
@@ -183,7 +183,7 @@ class KerasService(fr.Resource):
     kmodel.add(keras.layers.core.Dense(2)) # because I have 2 classes: up and down
     kmodel.add(keras.layers.core.Activation('softmax'))
     kmodel.compile(loss='categorical_crossentropy', optimizer='adam')
-    kmodel.fit(x_train_a, ytrain1h_a, batch_size=1, nb_epoch=2)
+    kmodel.fit(x_train_a, ytrain1h_a, batch_size=1, epochs=2)
 
     # I should collect predictions for yr2predict
     xtest_a       = np.array(test_yr_df[features_l].fillna(0.0))
