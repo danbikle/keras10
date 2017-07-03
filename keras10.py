@@ -142,7 +142,7 @@ class KerasService(fr.Resource):
     k2_s   = '2. For this year'
     k3_s   = '3. By learning from this many years'
     k4_s   = '4. With '
-    algo_s = 'Keras Logistic Regression'
+    algo_s = 'Keras Classifier (ReLU+Softmax)'
 
     # I should get prices and features for tkr:
     if not local: # I should see fl.request.args
